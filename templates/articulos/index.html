@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artículos | Te Comparto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #eef6ef; }
+        .foto-articulo { height: 200px; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'inicio' %}">Te Comparto</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
+                <a class="nav-link" href="{% url 'articulos' %}">Artículos</a>
+                <a class="nav-link" href="{% url 'nosotros' %}">Nosotros</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Artículos para compartir</h2>
+            <a class="btn btn-success" href="{% url 'crear' %}">Publicar artículo</a>
+        </div>
+
+        <div class="row g-4">
+            {% for articulo in articulos %}
+            <div class="col-sm-6 col-lg-4">
+                <div class="card h-100">
+                    {% if articulo.foto %}
+                    <img class="card-img-top foto-articulo" src="{{ articulo.foto.url }}" alt="Foto de {{ articulo.nombre_articulo }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ articulo.nombre_articulo }}</h5>
+
+                        <p class="mb-2">
+                            <span class="badge text-bg-secondary">{{ articulo.get_categoria_display }}</span>
+                            <span class="badge text-bg-secondary">{{ articulo.get_modalidad_display }}</span>
+                            {% if articulo.estado == 'DISPONIBLE' %}
+                            <span class="badge text-bg-success">{{ articulo.get_estado_display }}</span>
+                            {% elif articulo.estado == 'RESERVADO' %}
+                            <span class="badge text-bg-warning">{{ articulo.get_estado_display }}</span>
+                            {% else %}
+                            <span class="badge text-bg-dark">{{ articulo.get_estado_display }}</span>
+                            {% endif %}
+                        </p>
+
+                        <p class="card-text mb-1">Cantidad: <strong>{{ articulo.cantidad }}</strong></p>
+                        {% if articulo.a_cambio %}
+                        <p class="card-text mb-1">Busca a cambio: {{ articulo.a_cambio }}</p>
+                        {% endif %}
+                        <p class="card-text mb-0">
+                            <small class="text-muted">
+                                Publicado: {{ articulo.fecha_publicacion|date:"d/m/Y" }}<br>
+                                Contacto: {{ articulo.nombre_donante }} - {{ articulo.fono }}
+                            </small>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a class="btn btn-sm btn-outline-success" href="{% url 'editar' articulo.id %}">Editar</a>
+                        <a class="btn btn-sm btn-outline-danger"
+                           href="{% url 'eliminar' articulo.id %}"
+                           onclick="return confirm('¿Eliminar {{ articulo.nombre_articulo }}?');">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted py-5">Aún no hay artículos publicados.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

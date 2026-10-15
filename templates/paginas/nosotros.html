@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros | Te Comparto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #eef6ef; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'inicio' %}">Te Comparto</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
+                <a class="nav-link" href="{% url 'articulos' %}">Artículos</a>
+                <a class="nav-link" href="{% url 'nosotros' %}">Nosotros</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <div class="col-md-8">
+            <h2>Quiénes somos</h2>
+            <p class="lead">
+                Te Comparto es una iniciativa de una junta de vecinos. Reunimos a familias
+                que comparten colaciones para el colegio y ropa infantil en buen estado,
+                ya sea regalándola o intercambiándola.
+            </p>
+            <h4 class="mt-4">¿Cómo funciona?</h4>
+            <ol>
+                <li>Publicas lo que quieres compartir, con foto y cantidad.</li>
+                <li>Eliges si lo <strong>regalas</strong> o lo ofreces en <strong>trueque</strong>.</li>
+                <li>Otra familia lo reserva y se pone de acuerdo contigo para el retiro.</li>
+                <li>Cuando lo recibe, cambias el estado a <em>Entregado</em>.</li>
+            </ol>
+            <p class="text-muted">Los niños crecen rápido: lo que a uno le queda chico, a otro le sirve.</p>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

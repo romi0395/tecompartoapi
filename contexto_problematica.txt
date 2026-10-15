@@ -1,0 +1,191 @@
+TE COMPARTO - COLACIÓN ESCOLAR Y ROPA COMUNITARIA
+Documento de contexto, requerimientos y mockup
+
+Asignatura: Programación Backend, Evaluación 3
+Estudiante: Romina Araya Castañeda
+
+
+1. LA ORGANIZACIÓN
+
+"Te Comparto" es una iniciativa comunitaria que nació para darle
+respuesta a necesidades que surgieron dentro de la comunidad,
+potenciada por la junta de vecinos. Reúne a familias del barrio que
+quieran compartir colaciones para el colegio (jugos, galletas, frutas
+envasadas) y ropa infantil en buen estado (uniformes, abrigos,
+zapatos), ya sea regalándolos o intercambiándolos a través de un
+trueque por algo que necesiten.
+
+La iniciativa la coordinan tres o cuatro voluntarias de la junta de
+vecinos, que ayudan a que lo que ofrece una familia llegue a otra que
+lo necesita.
+
+Cómo funciona hoy, antes de la aplicación:
+  1. Una familia avisa por el grupo de WhatsApp del barrio que tiene
+     ropa o colaciones para compartir.
+  2. El mensaje se pierde entre muchos otros y nadie sabe si el
+     artículo sigue disponible.
+  3. No queda registro de quién lo recibió, y a veces dos familias
+     llegan por lo mismo.
+
+
+2. LA PROBLEMÁTICA
+
+  a) Los niños crecen rápido, así que la ropa y los uniformes les
+     quedan chicos cada año, aunque muchas veces siguen en buen
+     estado.
+  b) A varias familias les cuesta cubrir la colación diaria del
+     colegio.
+  c) Lo que se ofrece no queda anotado en ninguna parte: no se sabe
+     qué hay disponible, qué está reservado ni qué ya se entregó.
+
+La solución propuesta es una aplicación web hecha con Django y
+conectada a una base de datos MySQL/MariaDB. Cada artículo (colación o
+ropa) se publica con su foto, su cantidad y si se regala o se cambia
+por trueque. Además, cada artículo tiene un estado (Disponible,
+Reservado o Entregado) que se va actualizando hasta que llega a otra
+familia.
+
+
+3. USUARIOS
+
+  - Familias y voluntarias: publican, editan, ven y eliminan
+    artículos desde la página.
+  - Coordinadora de la iniciativa: es la superusuaria y administra la
+    tabla desde el módulo Admin de Django.
+
+
+4. REQUERIMIENTOS
+
+Funcionales (lo que hace la aplicación):
+  RF1  Publicar un artículo con su foto (crear).
+  RF2  Ver la lista de todos los artículos con su foto, categoría,
+       modalidad y estado (leer).
+  RF3  Editar un artículo, por ejemplo para cambiar su estado a
+       Reservado o Entregado, corregir datos o cambiar la foto
+       (actualizar).
+  RF4  Eliminar un artículo, borrando también su foto de la carpeta
+       (eliminar).
+  RF5  Validar los datos antes de guardarlos (ver punto 6).
+  RF6  Administrar la tabla desde el módulo Admin de Django.
+  RF7  Tener las páginas informativas Inicio y Nosotros.
+
+No funcionales (cómo debe ser):
+  RNF1 Usar una base de datos MySQL/MariaDB llamada tecomparto.
+  RNF2 Usar Bootstrap para que se vea ordenado y se pueda usar desde
+       el celular.
+  RNF3 Proteger los formularios con el token CSRF.
+
+
+5. MODELO DE DATOS (tabla Articulo)
+
+  Campo              Tipo                   Detalle
+  id                 AutoField              clave primaria, automática
+  nombre_articulo    CharField (80)         ej: Polerón azul talla 8
+  categoria          CharField (10)         COLACION o ROPA
+  modalidad          CharField (10)         REGALO o TRUEQUE
+  cantidad           PositiveIntegerField   unidades disponibles
+  a_cambio           CharField (100)        opcional, lo que se busca
+                                            en un trueque
+  estado             CharField (12)         DISPONIBLE, RESERVADO o
+                                            ENTREGADO
+  nombre_donante     CharField (100)        nombre de quien publica
+  fono               CharField (12)         teléfono de contacto
+  fecha_publicacion  DateField              día en que se publicó
+  foto               ImageField             foto del artículo
+
+
+6. VALIDACIONES DEL FORMULARIO
+
+Están en el archivo forms.py y se escriben como métodos clean_ más el
+nombre del campo:
+
+  V1  nombre_articulo: mínimo 3 caracteres.
+  V2  cantidad: debe estar entre 1 y 50.
+  V3  nombre_donante: mínimo 3 caracteres.
+  V4  fono: debe tener 9 caracteres y empezar con 9 (celular chileno).
+
+Además, Django revisa solo que los campos obligatorios no vengan
+vacíos, que la fecha sea válida (día/mes/año), que la opción elegida
+exista y que el archivo subido sea una imagen.
+
+
+7. MOCKUP DE LAS PÁGINAS
+
+7.1 Inicio (ruta /)
+
+  +-------------------------------------------------------------+
+  | Te Comparto            Inicio | Artículos | Nosotros        |
+  +-------------------------------------------------------------+
+  |                                                             |
+  |  Hoy te comparto, mañana me compartes                       |
+  |  Colaciones y ropa para los niños del barrio: regala,       |
+  |  intercambia o reserva lo que necesites.                    |
+  |                                                             |
+  |  [ Ver artículos ]     [ Publicar artículo ]                |
+  |                                                             |
+  +-------------------------------------------------------------+
+
+7.2 Lista de artículos (ruta /articulos)
+
+  +-------------------------------------------------------------+
+  | Te Comparto            Inicio | Artículos | Nosotros        |
+  +-------------------------------------------------------------+
+  | Artículos para compartir            [ Publicar artículo ]   |
+  |                                                             |
+  |  +---------------+  +---------------+  +---------------+    |
+  |  |    [foto]     |  |    [foto]     |  |    [foto]     |    |
+  |  | Polerón azul  |  | Pack de jugos |  | Zapatos 32    |    |
+  |  | Ropa Trueque  |  | Colación      |  | Ropa Regalo   |    |
+  |  | Disponible    |  | Reservado     |  | Entregado     |    |
+  |  | Cantidad: 1   |  | Cantidad: 10  |  | Cantidad: 1   |    |
+  |  | [Editar]      |  | [Editar]      |  | [Editar]      |    |
+  |  | [Eliminar]    |  | [Eliminar]    |  | [Eliminar]    |    |
+  |  +---------------+  +---------------+  +---------------+    |
+  +-------------------------------------------------------------+
+
+7.3 Publicar artículo (ruta /articulos/crear)
+
+  +-------------------------------------------------------------+
+  | Te Comparto            Inicio | Artículos | Nosotros        |
+  +-------------------------------------------------------------+
+  | Publicar artículo                                           |
+  |                                                             |
+  |  Nombre del artículo   [____________________________]      |
+  |  Categoría             [ Seleccione una opción    v ]       |
+  |  Modalidad             [ Seleccione una opción    v ]       |
+  |  Cantidad              [____________________________]      |
+  |  Qué busco a cambio    [____________________________]      |
+  |  Estado                [ Seleccione una opción    v ]       |
+  |  Nombre de contacto    [____________________________]      |
+  |  Teléfono              [____________________________]      |
+  |  Fecha de publicación  [____________________________]      |
+  |                        Formato: día/mes/año                 |
+  |  Foto                  [ Elegir archivo ]                   |
+  |                                                             |
+  |  Los errores aparecen en rojo debajo de cada campo.         |
+  |                                                             |
+  |  [ Guardar ]   [ Cancelar ]                                 |
+  +-------------------------------------------------------------+
+
+7.4 Editar artículo (ruta /articulos/editar/id)
+    Es igual a la página de publicar, pero con los datos ya cargados
+    y la foto actual a la vista.
+
+7.5 Eliminar artículo (ruta /articulos/eliminar/id)
+    No tiene página propia. Es el botón Eliminar de cada tarjeta, que
+    pide confirmación, borra el registro con su foto y vuelve a la
+    lista.
+
+7.6 Nosotros (ruta /nosotros)
+    Explica quiénes somos y cómo funciona el proceso.
+
+
+8. RUTAS DE LA APLICACIÓN
+
+  /                         inicio
+  /nosotros                 nosotros
+  /articulos                lista de artículos
+  /articulos/crear          publicar artículo
+  /articulos/editar/id      editar artículo
+  /articulos/eliminar/id    eliminar artículo
+  /admin/                   módulo Admin de Django
